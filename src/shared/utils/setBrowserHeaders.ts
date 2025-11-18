@@ -1,12 +1,13 @@
 import browser from 'webextension-polyfill';
 
-import type { Profile, RequestHeader } from '#entities/request-profile/types';
+import type { Profile, RequestHeader, MockOverride } from '#entities/request-profile/types';
 import { BrowserStorageKey } from '#shared/constants';
 
 import { createUrlCondition } from './createUrlCondition';
 import { validateHeader } from './headers';
 import { logger } from './logger';
 import { setIconBadge } from './setIconBadge';
+import { getMockRules } from './createMockRules';
 
 function getRulesForHeader(header: RequestHeader, urlFilters: string[]): browser.DeclarativeNetRequest.Rule[] {
   const allResourceTypes = [
@@ -105,12 +106,16 @@ export async function setBrowserHeaders(result: Record<string, unknown>) {
 
   const selectedProfileHeaders = profile?.requestHeaders ?? [];
   const selectedProfileUrlFilters = profile?.urlFilters ?? [];
+  const selectedProfileMockOverrides = profile?.mockOverrides ?? [];
 
   const activeHeaders = selectedProfileHeaders.filter(
     ({ disabled, name, value }) => !disabled && validateHeader(name, value),
   );
 
-  // Remove extra line and fix logging
+  const activeMockOverrides = selectedProfileMockOverrides.filter(
+    ({ disabled }) => !disabled,
+  );
+
   logger.info('URL filters from profile:', selectedProfileUrlFilters);
 
   const activeUrlFilters = selectedProfileUrlFilters
@@ -118,19 +123,25 @@ export async function setBrowserHeaders(result: Record<string, unknown>) {
     .map(({ value }) => value.trim());
 
   logger.info('Active URL filters:', activeUrlFilters);
+  logger.info('Active mock overrides:', activeMockOverrides);
 
-  // Добавляем более заметное логирование
   logger.debug('🔍 Profile data:', {
     profileId: selectedProfile,
     headersCount: selectedProfileHeaders.length,
     activeHeadersCount: activeHeaders.length,
     urlFiltersCount: selectedProfileUrlFilters.length,
     activeUrlFiltersCount: activeUrlFilters.length,
+    mockOverridesCount: selectedProfileMockOverrides.length,
+    activeMockOverridesCount: activeMockOverrides.length,
   });
 
-  const addRules: browser.DeclarativeNetRequest.Rule[] = !isPaused
+  const headerRules: browser.DeclarativeNetRequest.Rule[] = !isPaused
     ? activeHeaders.flatMap(header => getRulesForHeader(header, activeUrlFilters))
     : [];
+
+  const mockRules: browser.DeclarativeNetRequest.Rule[] = !isPaused ? getMockRules(activeMockOverrides) : [];
+
+  const addRules = [...headerRules, ...mockRules];
 
   const removeRuleIds = currentRules.map(item => item.id);
 

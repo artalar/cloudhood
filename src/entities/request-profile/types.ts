@@ -10,7 +10,20 @@ export type UrlFilter = {
   disabled: boolean;
 };
 
-export type Profile = { id: string; name?: string; requestHeaders: RequestHeader[]; urlFilters: UrlFilter[] };
+export type MockOverride = {
+  id: number;
+  urlPattern: string;
+  responseContent: string;
+  disabled: boolean;
+};
+
+export type Profile = { 
+  id: string; 
+  name?: string; 
+  requestHeaders: RequestHeader[]; 
+  urlFilters: UrlFilter[];
+  mockOverrides?: MockOverride[];
+};
 
 export type RemoveHeaderPayload = {
   headerId: number;
