@@ -39,11 +39,11 @@ export const $profileExportString = combine(
     return JSON.stringify(
       profiles
         .filter(({ id }) => selectedExportProfileIdList.includes(id))
-        .map(({ id, requestHeaders, mockOverrides, ...rest }) => ({
+        .map(({ id, requestHeaders, responseOverrides, ...rest }) => ({
           ...rest,
           requestHeaders: requestHeaders.map(({ id, ...headerRest }) => headerRest),
-          ...(mockOverrides && {
-            mockOverrides: mockOverrides.map(({ id, ...overrideRest }) => overrideRest),
+          ...(responseOverrides && {
+            responseOverrides: responseOverrides.map(({ id, ...overrideRest }) => overrideRest),
           }),
         })) || [],
     );

@@ -1,10 +1,10 @@
 import browser from 'webextension-polyfill';
 
-import type { MockOverride } from '#entities/request-profile/types';
+import type { ResponseOverride } from '#entities/request-profile/types';
 
 import { logger } from './logger';
 
-const MOCK_RULE_ID_OFFSET = 100000;
+const OVERRIDE_RULE_ID_OFFSET = 100000;
 
 function testUrlPattern(pattern: string): boolean {
   try {
@@ -33,7 +33,7 @@ function convertUrlPatternToRegex(pattern: string): string {
   }
 }
 
-export function getMockRules(mockOverrides: MockOverride[]): browser.DeclarativeNetRequest.Rule[] {
+export function getOverrideRules(responseOverrides: ResponseOverride[]): browser.DeclarativeNetRequest.Rule[] {
   const allResourceTypes = [
     'main_frame',
     'sub_frame',
@@ -52,7 +52,7 @@ export function getMockRules(mockOverrides: MockOverride[]): browser.Declarative
 
   const rules: browser.DeclarativeNetRequest.Rule[] = [];
 
-  mockOverrides.forEach((override, index) => {
+  responseOverrides.forEach((override, index) => {
     if (!override.urlPattern.trim() || !override.responseContent.trim()) {
       return;
     }
@@ -73,7 +73,7 @@ export function getMockRules(mockOverrides: MockOverride[]): browser.Declarative
       const regexFilter = convertUrlPatternToRegex(urlPattern);
 
       rules.push({
-        id: MOCK_RULE_ID_OFFSET + index,
+        id: OVERRIDE_RULE_ID_OFFSET + index,
         priority: 1,
         action: {
           type: 'redirect' as const,
@@ -87,9 +87,9 @@ export function getMockRules(mockOverrides: MockOverride[]): browser.Declarative
         },
       });
 
-      logger.debug(`Created mock rule for pattern: ${urlPattern}`);
+      logger.debug(`Created override rule for pattern: ${urlPattern}`);
     } catch (error) {
-      logger.error(`Failed to create mock rule for override ${override.id}:`, error);
+      logger.error(`Failed to create override rule for ${override.id}:`, error);
     }
   });
 

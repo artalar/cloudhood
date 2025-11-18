@@ -1,13 +1,13 @@
 import { attach, createEvent, sample } from 'effector';
 
 import { $requestProfiles, $selectedRequestProfile, profileUpdated } from '#entities/request-profile/model';
-import type { MockOverride } from '#entities/request-profile/types';
+import type { ResponseOverride } from '#entities/request-profile/types';
 
-export const selectedProfileMockOverridesUpdated = createEvent<MockOverride[]>();
+export const selectedProfileResponseOverridesUpdated = createEvent<ResponseOverride[]>();
 
-const selectedProfileMockOverridesUpdatedFx = attach({
+const selectedProfileResponseOverridesUpdatedFx = attach({
   source: { profiles: $requestProfiles, selectedProfile: $selectedRequestProfile },
-  effect: ({ profiles, selectedProfile }, updatedOverrides: MockOverride[]) => {
+  effect: ({ profiles, selectedProfile }, updatedOverrides: ResponseOverride[]) => {
     const profile = profiles.find(p => p.id === selectedProfile);
 
     if (!profile) {
@@ -16,7 +16,7 @@ const selectedProfileMockOverridesUpdatedFx = attach({
 
     return {
       ...profile,
-      mockOverrides: (profile.mockOverrides || []).map(override => {
+      responseOverrides: (profile.responseOverrides || []).map(override => {
         const updatedOverride = updatedOverrides.find(m => m.id === override.id);
         if (updatedOverride) {
           return { ...updatedOverride };
@@ -28,5 +28,5 @@ const selectedProfileMockOverridesUpdatedFx = attach({
   },
 });
 
-sample({ clock: selectedProfileMockOverridesUpdated, target: selectedProfileMockOverridesUpdatedFx });
-sample({ clock: selectedProfileMockOverridesUpdatedFx.doneData, target: profileUpdated });
+sample({ clock: selectedProfileResponseOverridesUpdated, target: selectedProfileResponseOverridesUpdatedFx });
+sample({ clock: selectedProfileResponseOverridesUpdatedFx.doneData, target: profileUpdated });

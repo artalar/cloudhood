@@ -7,27 +7,27 @@ import { Typography } from '@snack-uikit/typography';
 import { $isPaused } from '#entities/is-paused/model';
 import { $isProfileRemoveAvailable } from '#entities/request-profile/model';
 import { selectedProfileRemoved } from '#features/selected-profile/remove/model';
-import { selectedProfileMockOverridesAdded } from '#features/selected-profile-mock-overrides/add/model';
+import { selectedProfileResponseOverridesAdded } from '#features/selected-profile-overrides/add/model';
 import { ProfileActionsLayout } from '#shared/components';
-import { MockOverrides } from '#widgets/mock-overrides';
+import { Overrides } from '#widgets/overrides';
 
-import { AllMockOverridesCheckbox } from './AllMockOverridesCheckbox';
+import { AllOverridesCheckbox } from './AllOverridesCheckbox';
 
-export function MockOverridesActions() {
+export function OverridesActions() {
   const [isPaused, handleRemove, isProfileRemoveAvailable] = useUnit([
     $isPaused,
     selectedProfileRemoved,
     $isProfileRemoveAvailable,
   ]);
 
-  const handleAddMockOverride = () => {
-    selectedProfileMockOverridesAdded([{ disabled: false, urlPattern: '', responseContent: '' }]);
+  const handleAddResponseOverride = () => {
+    selectedProfileResponseOverridesAdded([{ disabled: false, urlPattern: '', responseContent: '' }]);
   };
 
   const leftHeaderActions = (
     <>
-      <AllMockOverridesCheckbox />
-      <Typography.SansTitleM data-test-id='profile-overrides-section'>Mock Overrides</Typography.SansTitleM>
+      <AllOverridesCheckbox />
+      <Typography.SansTitleM data-test-id='profile-overrides-section'>Response Overrides</Typography.SansTitleM>
     </>
   );
 
@@ -35,12 +35,12 @@ export function MockOverridesActions() {
     <>
       <ButtonFunction
         disabled={isPaused}
-        data-test-id='add-mock-override-button'
+        data-test-id='add-response-override-button'
         icon={<PlusSVG />}
-        onClick={handleAddMockOverride}
+        onClick={handleAddResponseOverride}
       />
       <ButtonFunction
-        data-test-id='remove-mock-override-button'
+        data-test-id='remove-response-override-button'
         icon={<TrashSVG />}
         disabled={isPaused || !isProfileRemoveAvailable}
         onClick={handleRemove}
@@ -50,7 +50,7 @@ export function MockOverridesActions() {
 
   return (
     <ProfileActionsLayout leftHeaderActions={leftHeaderActions} rightHeaderActions={rightHeaderActions}>
-      <MockOverrides />
+      <Overrides />
     </ProfileActionsLayout>
   );
 }

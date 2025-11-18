@@ -7,22 +7,22 @@ import { $activeProfileActionsTab, profileActionsTabChanged } from '#entities/pr
 import { 
   $selectedProfileActiveRequestHeadersCount, 
   $selectedProfileActiveUrlFiltersCount,
-  $selectedProfileActiveMockOverridesCount
+  $selectedProfileActiveResponseOverridesCount
 } from '#entities/request-profile/model';
 import { getCounterProps } from '#shared/utils/getCounterProps';
 
-import { MockOverridesActions } from './MockOverridesActions';
+import { OverridesActions } from './OverridesActions';
 import { RequestHeadersActions } from './RequestHeadersActions';
 import * as S from './styled';
 import { UrlFiltersActions } from './UrlFiltersActions';
 
 export function ProfileActions() {
-  const [isPaused, activeTab, activeRequestHeadersCount, activeUrlFiltersCount, activeMockOverridesCount] = useUnit([
+  const [isPaused, activeTab, activeRequestHeadersCount, activeUrlFiltersCount, activeResponseOverridesCount] = useUnit([
     $isPaused,
     $activeProfileActionsTab,
     $selectedProfileActiveRequestHeadersCount,
     $selectedProfileActiveUrlFiltersCount,
-    $selectedProfileActiveMockOverridesCount
+    $selectedProfileActiveResponseOverridesCount
   ]);
 
   return (
@@ -41,7 +41,7 @@ export function ProfileActions() {
           />
           <Tabs.Tab
             label='Overrides'
-            counter={getCounterProps(activeMockOverridesCount)}
+            counter={getCounterProps(activeResponseOverridesCount)}
             value='overrides'
           />
         </Tabs.TabBar>
@@ -52,7 +52,7 @@ export function ProfileActions() {
           <UrlFiltersActions />
         </Tabs.TabContent>
         <Tabs.TabContent value='overrides'>
-          <MockOverridesActions />
+          <OverridesActions />
         </Tabs.TabContent>
       </Tabs>
 

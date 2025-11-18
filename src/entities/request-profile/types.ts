@@ -10,7 +10,7 @@ export type UrlFilter = {
   disabled: boolean;
 };
 
-export type MockOverride = {
+export type ResponseOverride = {
   id: number;
   urlPattern: string;
   responseContent: string;
@@ -22,7 +22,7 @@ export type Profile = {
   name?: string; 
   requestHeaders: RequestHeader[]; 
   urlFilters: UrlFilter[];
-  mockOverrides?: MockOverride[];
+  responseOverrides?: ResponseOverride[];
 };
 
 export type RemoveHeaderPayload = {

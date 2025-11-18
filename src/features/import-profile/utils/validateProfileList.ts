@@ -83,7 +83,7 @@ export function generateProfileList(profileList: Profile[], existingProfileList:
       id: generateIdWithExcludeList(existingProfileRequestHeadersListId),
     })),
     urlFilters: profile.urlFilters || [],
-    mockOverrides: (profile.mockOverrides || []).map(override => ({
+    responseOverrides: (profile.responseOverrides || []).map(override => ({
       ...override,
       id: generateIdWithExcludeList(existingProfileRequestHeadersListId),
     })),

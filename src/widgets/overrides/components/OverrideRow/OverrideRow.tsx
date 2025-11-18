@@ -9,14 +9,14 @@ import { Checkbox, CheckboxProps } from '@snack-uikit/toggles';
 import { Tooltip } from '@snack-uikit/tooltip';
 
 import { $isPaused } from '#entities/is-paused/model';
-import type { MockOverride } from '#entities/request-profile/types';
+import type { ResponseOverride } from '#entities/request-profile/types';
 import { DragHandle } from '#entities/sortable-list';
-import { selectedProfileMockOverridesRemoved } from '#features/selected-profile-mock-overrides/remove/model';
-import { selectedProfileMockOverridesUpdated } from '#features/selected-profile-mock-overrides/update/model';
+import { selectedProfileResponseOverridesRemoved } from '#features/selected-profile-overrides/remove/model';
+import { selectedProfileResponseOverridesUpdated } from '#features/selected-profile-overrides/update/model';
 
 import * as S from './styled';
 
-export function MockOverrideRow(props: MockOverride) {
+export function OverrideRow(props: ResponseOverride) {
   const { disabled, urlPattern, responseContent, id } = props;
   const { setNodeRef, listeners, attributes, transition, transform, isDragging } = useSortable({ id });
   const { isPaused } = useUnit({
@@ -37,11 +37,11 @@ export function MockOverrideRow(props: MockOverride) {
   };
 
   const handleChange = (field: 'urlPattern' | 'responseContent') => (value: string) => {
-    selectedProfileMockOverridesUpdated([{ ...props, [field]: value }]);
+    selectedProfileResponseOverridesUpdated([{ ...props, [field]: value }]);
   };
 
   const handleChecked: CheckboxProps['onChange'] = checked => {
-    selectedProfileMockOverridesUpdated([{ ...props, disabled: !checked }]);
+    selectedProfileResponseOverridesUpdated([{ ...props, disabled: !checked }]);
   };
 
   return (
@@ -50,7 +50,7 @@ export function MockOverrideRow(props: MockOverride) {
         <DragHandle disabled={isPaused} listeners={listeners} attributes={attributes} />
 
         <Checkbox
-          data-test-id='mock-override-checkbox'
+          data-test-id='response-override-checkbox'
           disabled={isPaused}
           checked={!disabled}
           onChange={handleChecked}
@@ -90,9 +90,9 @@ export function MockOverrideRow(props: MockOverride) {
       <ButtonFunction
         disabled={isPaused}
         size='s'
-        data-test-id='remove-mock-override-button'
+        data-test-id='remove-response-override-button'
         icon={<CrossSVG />}
-        onClick={() => selectedProfileMockOverridesRemoved([id])}
+        onClick={() => selectedProfileResponseOverridesRemoved([id])}
       />
     </S.Wrapper>
   );
